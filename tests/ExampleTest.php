@@ -8,8 +8,5 @@ class ExampleTest extends TestCase {
         $this->assertEquals(4, 2+ 2);
     }
 
-    public function testAddFunction() {
-        require './functions.php';
-        $this->assertEquals(4, add(2, 2));
-    }
+
 }
