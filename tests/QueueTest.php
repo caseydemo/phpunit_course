@@ -3,33 +3,59 @@
 
     class QueueTest extends TestCase {
 
-        protected $queue;
+        protected static $queue;
 
         protected function setUp(): void {
-            $this->queue = new Queue;
+            static::$queue->clear();
         }
+
+        public static function setUpBeforeClass(): void {
+            static::$queue = new Queue;
+        }
+
+        public static function tearDownAfterClass(): void {
+            static::$queue = null;
+        }
+
 
         public function testNewQueueIsEmpty() {
-            $this->assertEquals(0, $this->queue->getCount());
+            $this->assertEquals(0, static::$queue->getCount());
         }
 
 
-        /**
-         * @depends testNewQueueIsEmpty
-         */
+       
         public function testAnItemIsAddedToTheQueue() {
-            $this->queue->push('green');
-            $this->assertEquals(1, $this->queue->getCount());
+            static::$queue->push('green');
+            $this->assertEquals(1, static::$queue->getCount());
         }
 
-        /**
-         * @depends testAnItemIsAddedToTheQueue
-         */
-        public function restRemoveAnItemFromTheQueue() {
-            
-            $item = $this->queue->pop();
-            $this->assertEquals(0, $this->queue->getCount());
+       
+        public function testRemoveAnItemFromTheQueue() {
+            static::$queue->push('green');
+            $item = static::$queue->pop();
+            $this->assertEquals(0, static::$queue->getCount());
             $this->assertEquals('green', $item);
+        }
+
+        public function testAnItemIsRemovedFromTheFrontOfTheQueue() {
+            static::$queue->push('first');
+            static::$queue->push('second');
+            $this->assertEquals('first', static::$queue->pop());
+        }
+
+        public function test_max_number_of_items_can_be_added() {
+            for ($i=0; $i < Queue::MAX_ITEMS; $i++) { 
+                static::$queue->push($i);
+            }
+            $this->assertEquals(Queue::MAX_ITEMS, static::$queue->getCount());
+        }
+
+        public function test_over_max_throws_exception() {
+            for ($i=0; $i < Queue::MAX_ITEMS; $i++) { 
+                static::$queue->push($i);
+            }
+            $this->expectException(QueueException::class);
+            static::$queue->push('donkey teeth');
         }
 
     }
