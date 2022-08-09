@@ -55,6 +55,7 @@
                 static::$queue->push($i);
             }
             $this->expectException(QueueException::class);
+            $this->expectExceptionMessage('Queue is full');
             static::$queue->push('donkey teeth');
         }
 
