@@ -25,4 +25,21 @@ class UserTest extends TestCase {
         $user->email = 'caseyd@budsgunshop.com';
         $this->assertTrue($user->notify('Hello'));
     }
+
+
+    public function test_user_can_not_notify_with_no_email() {
+        $user = new User;
+
+        /* use the original methods and not the stubs */
+        $mock = $this->getMockBuilder(Mailer::class)
+                    ->setMethods()
+                    ->getMock();
+
+
+        // $mock = $this->createMock(Mailer::class);
+        // $mock->method('sendMessage')->will($this->throwException(new Exception));
+        $user->setMailer($mock);
+        $this->expectException(Exception::class);
+        $user->notify("Hello");
+    }
 }
